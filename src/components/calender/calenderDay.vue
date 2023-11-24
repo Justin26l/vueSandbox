@@ -1,7 +1,7 @@
 <template>
     <div class="dateCol" 
         :class="
-            xselectedMonth != calenderMonth ? 'bg-gray-300' : 
+            refSelectedMonth != calenderMonth ? 'bg-gray-300' : 
             isSelected ? 'bg-blue-200' :
             'bg-white' 
         "
@@ -72,32 +72,38 @@ const taskTotal = ref(props.taskTotal);
 const taskDone = ref(props.taskDone);
 const taskPending = ref(taskTotal.value - taskDone.value);
 
-const xselectedDate = computed(()=>props.selectedDate);
-const xselectedMonth = computed(()=>props.selectedMonth);
-const xselectedYear = computed(()=>props.selectedYear);
+const refSelectedDate  = computed(()=>props.selectedDate);
+const refSelectedMonth = computed(()=>props.selectedMonth);
+const refSelectedYear  = computed(()=>props.selectedYear);
+
+const refCalenderDate  = computed(()=> props.calenderDate);
+const refCalenderMonth = computed(()=> props.calenderMonth);
+const refCalenderYear  = computed(()=> props.calenderYear);
 
 const today = new Date();
 const todayDate = today.getDate();
 const todayMonth = today.getMonth();
 const todayYear = today.getFullYear();
 
-
-const isToday = ref(
-    todayDate == props.calenderDate && todayMonth == props.calenderMonth && todayYear == props.calenderYear
+const isToday = computed(()=>
+    todayDate == refCalenderDate.value && todayMonth == refCalenderMonth.value && todayYear == refCalenderYear.value
 );
-const isPast = ref(
-    todayYear > props.calenderYear || 
-    (todayYear == props.calenderYear && todayMonth > props.calenderMonth) || 
-    (todayYear == props.calenderYear && todayMonth == props.calenderMonth && todayDate > props.calenderDate)
+const isPast = computed(()=>
+    todayYear > refCalenderYear.value || 
+    (todayYear == refCalenderYear.value && todayMonth > refCalenderMonth.value) || 
+    (todayYear == refCalenderYear.value && todayMonth == refCalenderMonth.value && todayDate > refCalenderDate.value)
 );
 
-const isFuture = ref(
-    todayYear < props.calenderYear || 
-    (todayYear == props.calenderYear && todayMonth < props.calenderMonth) || 
-    (todayYear == props.calenderYear && todayMonth == props.calenderMonth && todayDate < props.calenderDate)
+const isFuture = computed(()=>
+    todayYear < refCalenderYear.value || 
+    (todayYear == refCalenderYear.value && todayMonth < refCalenderMonth.value) || 
+    (todayYear == refCalenderYear.value && todayMonth == refCalenderMonth.value && todayDate < refCalenderDate.value)
 );
 
 const isSelected = computed(()=>{
-    return xselectedDate.value == props.calenderDate && xselectedMonth.value == props.calenderMonth && xselectedYear.value == props.calenderYear;
+    return refSelectedDate.value == refCalenderDate.value && 
+        refSelectedMonth.value == refCalenderMonth.value && 
+        refSelectedYear.value == refCalenderYear.value;
 });
+
 </script>
