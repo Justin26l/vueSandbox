@@ -40,20 +40,16 @@
     align-items: center;
     justify-content: center;
 
-    font-size: 14px;
-    color: var(--default-text-color);
-    cursor: default;
-    margin: 0 1px 0 0;
     padding-left: 16px;
     width: 100%;
     height: 40px;
     float: left;
     position: relative;
     background-color: var(--default-color);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    color: var(--default-text-color);
+
+    border-top-right-radius: .3rem;
+    border-bottom-right-radius: .3rem;
 }
 
 
@@ -67,7 +63,7 @@
     height: 0;
     border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
-    border-left: 18px solid var(--default-color);
+    border-left: 19px solid var(--default-color);
     z-index: 2;
 }
 
@@ -83,7 +79,12 @@
     border: none;
 }
 
-.arrow-progress-component .step:first-child,
+.arrow-progress-component .step:first-child{
+    border-top-left-radius: .4rem;
+    border-bottom-left-radius: .4rem;
+
+}
+
 .arrow-progress-component .step:last-child {
     border-top-right-radius: .4rem;
     border-bottom-right-radius: .4rem;
