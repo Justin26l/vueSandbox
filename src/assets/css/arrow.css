@@ -1,0 +1,68 @@
+
+/* Responsive Arrow Progress Bar */
+:root {
+    --default-color: silver;
+    --default-text-color: black;
+    --current-color: grey;
+    --current-text-color: white;
+    --done-color: black;
+    --arrow-height: 10px;
+}
+
+.arrow-progress-component {
+    display: flex;
+}
+
+.arrow-progress-component .step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--arrow-height);
+    width: 100%;
+    position: relative;
+}
+
+.arrow-progress-component .step span {
+    display: block;
+    height: 100%;
+    color: var(--default-text-color);
+    background-color: var(--default-color);
+}
+
+svg.arrow {
+    height: var(--arrow-height);
+    width: var(--arrow-height);
+}
+
+.arrow-progress-component .step > svg {
+    fill: var(--default-color);
+}
+.arrow-progress-component .step>div {
+    width: 100%;
+
+    height: var(--arrow-height);
+    background-color: var(--default-color);
+}
+
+.arrow-progress-component .step.current > svg {
+    fill: var(--current-color);
+}
+.arrow-progress-component .step.current>div {
+    width: 100%;
+    height: var(--arrow-height);
+    background-color: var(--current-color);
+}
+
+
+.arrow-progress-component .step.done {
+    width:auto;
+}
+.arrow-progress-component .step.done > svg {
+    fill: var(--done-color);
+}
+.arrow-progress-component .step.done>div {
+    width: 100%;
+    height: var(--arrow-height);
+    background-color: var(--done-color);
+    display:none;
+}

@@ -15,14 +15,6 @@
     </div>
 </template>
 
-<style scoped>
-.dateCol{
-    flex: 1;
-    text-align: center;
-    border: .5px solid lightgray;
-}
-</style>
-
 <script setup lang='ts'>
 import { ref, computed } from 'vue'
 import { defineProps } from 'vue';

@@ -31,10 +31,20 @@
 
     <!-- <calender></calender> -->
 
-    <p>123123</p>
-    <arrowProgress></arrowProgress>
-    <p>456456</p>
-    
+    <p>123123213</p>
+    <arrowProgress>
+      <arrow status="done">
+        step 1 
+      </arrow>
+      <arrow status="current">
+        step 2
+      </arrow>
+      <arrow status="default">
+        step 3
+      </arrow>
+    </arrowProgress>
+    <p>123123213</p>
+
   </span>
   <br>
   <pre class="bg-green">data</pre>
@@ -43,5 +53,7 @@
 <script setup lang="ts">
 import pipelineProgress from './components/pipelineProgress.vue'
 import calender from './components/calender/index.vue';
-import arrowProgress from './components/arrowProgress.vue';
+import arrowProgress from './components/arrowProgress/index.vue';
+import arrow from './components/arrowProgress/arrow.vue';
+
 </script>
