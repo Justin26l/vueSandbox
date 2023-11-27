@@ -29,7 +29,11 @@
 
     <hr/> -->
 
-    <calender></calender>
+    <!-- <calender></calender> -->
+
+    <p>123123</p>
+    <arrowProgress></arrowProgress>
+    <p>456456</p>
     
   </span>
   <br>
@@ -37,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import stepProgress from './components/stepProgress.vue'
+import pipelineProgress from './components/pipelineProgress.vue'
 import calender from './components/calender/index.vue';
+import arrowProgress from './components/arrowProgress.vue';
 </script>

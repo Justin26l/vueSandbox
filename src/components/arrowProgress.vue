@@ -1,103 +1,99 @@
 <template>
-    <div class="container">
-        <!-- Responsive Arrow Progress Bar -->
-        <div class="arrow-steps clearfix">
-            <div class="step current"> <span> <a href="#">1</a></span> </div>
-            <div class="step"> <span><a href="#">2</a></span> </div>
-            <div class="step"> <span><a href="#">3</a></span> </div>
-            <div class="step"> <span><a href="#">4</a></span> </div>
-            <div class="step"> <span><a href="#">5</a></span> </div>
-        </div>
-        <!-- end Responsive Arrow Progress Bar -->
-        <div class="nav clearfix">
-            <a href="#" class="prev">Previous</a> |
-            <a href="#" class="next pull-right">Next</a>
+    <div :style="
+		{
+	'--default-color': props.defaultColor||'silver',
+    '--default-text-color': props.defaultTextColor||'gray',
+    '--current-color': props.currentColor||'gray',
+    '--current-text-color': props.currentTextColor||'white',
+    '--done-color': props.doneColor||'black',
+    '--border-color': props.borderColor||'white',
+
+		
+		}"
+    >
+        <div class="arrow-progress-component">
+            <div class="step done"> <span> step 1</span> </div>
+            <div class="step current"> <span><b>step 2</b> long and longer</span> </div>
+            <div class="step"> <span>step 3 cant be longer</span> </div>
+            <div class="step"> <span>nono, step 4</span> </div>
+            <div class="step"> <span>john cena</span> </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-/* jQuery Demo */
-
-.clearfix:after {
-    clear: both;
-    content: "";
-    display: block;
-    height: 0;
-}
 
 /* Responsive Arrow Progress Bar */
 
-.container {
-    font-family: 'Lato', sans-serif;
+/*  set var  */
+:root{
+	--default-color: silver;
+    --default-text-color: grey;
+    --current-color: grey;
+    --current-text-color: white;
+    --done-color: black;
 }
 
-.arrow-steps .step {
+.arrow-progress-component .step {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     font-size: 14px;
-    text-align: center;
-    color: #777;
+    color: var(--default-text-color);
     cursor: default;
     margin: 0 1px 0 0;
-    padding: 10px 0px 10px 0px;
-    width: 15%;
+    padding-left: 16px;
+    width: 100%;
+    height: 40px;
     float: left;
     position: relative;
-    background-color: #ddd;
+    background-color: var(--default-color);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
 
-.arrow-steps .step a {
-    color: #777;
-    text-decoration: none;
-}
 
-.arrow-steps .step:after,
-.arrow-steps .step:before {
+.arrow-progress-component .step:after,
+.arrow-progress-component .step:before {
     content: "";
     position: absolute;
     top: 0;
-    right: -17px;
+    right: -16px;
     width: 0;
     height: 0;
-    border-top: 19px solid transparent;
-    border-bottom: 17px solid transparent;
-    border-left: 17px solid #ddd;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 18px solid var(--default-color);
     z-index: 2;
 }
 
-.arrow-steps .step:before {
+.arrow-progress-component .step:before {
     right: auto;
     left: 0;
-    border-left: 17px solid #fff;
+    border-left: 18px solid var(--border-color);
     z-index: 0;
 }
 
-.arrow-steps .step:first-child:before {
+.arrow-progress-component .step:first-child:before,
+.arrow-progress-component .step:last-child:after {
     border: none;
 }
 
-.arrow-steps .step:last-child:after {
-    // border: none;
+.arrow-progress-component .step:first-child,
+.arrow-progress-component .step:last-child {
+    border-top-right-radius: .4rem;
+    border-bottom-right-radius: .4rem;
 }
 
-.arrow-steps .step:first-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-}
-
-.arrow-steps .step:last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-
-.arrow-steps .step span {
+.arrow-progress-component .step span {
     position: relative;
 }
 
-*.arrow-steps .step.done span:before {
+*.arrow-progress-component .step.done span:before {
     opacity: 1;
     content: "";
     position: absolute;
@@ -107,37 +103,47 @@
     line-height: 21px;
 }
 
-.arrow-steps {
+.arrow-progress-component {
     display: flex;
 }
 
-.arrow-steps .step.current {
-    color: #fff;
-    background-color: #5599e5;
+.arrow-progress-component .step.current {
+    color: var(--current-text-color);
+    background-color: var(--current-color);
 }
 
-.arrow-steps .step.current a {
-    color: #fff;
+.arrow-progress-component .step.current a {
+    color: var(--current-text-color);
     text-decoration: none;
 }
 
-.arrow-steps .step.current:after {
-    border-left: 17px solid #5599e5;
+.arrow-progress-component .step.current:after {
+    border-left: 18px solid var(--current-color);
 }
 
-.arrow-steps .step.done {
-    color: #173352;
-    background-color: #2f69aa;
-    max-width: 3rem;
+.arrow-progress-component .step.done {
+    background-color: var(--done-color);
+    max-width: 2rem;
 }
 
-.arrow-steps .step.done a {
-    color: #173352;
-    text-decoration: none;
+.arrow-progress-component .step.done > * {
     display: none;
 }
 
-.arrow-steps .step.done:after {
-    border-left: 17px solid #2f69aa;
+.arrow-progress-component .step.done:after {
+    border-left: 18px solid var(--done-color);
 }
+
 </style>
+
+<script setup lang="ts">
+import { defineProps } from 'vue'
+const props = defineProps({
+    defaultColor: String,
+    defaultTextColor: String,
+    currentColor: String,
+    currentTextColor: String,
+    doneColor: String,
+    borderColor: String,
+})
+</script>
