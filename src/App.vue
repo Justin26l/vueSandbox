@@ -29,7 +29,7 @@
 
     <hr/> -->
 
-    <calenderTouch></calenderTouch>
+    <calender></calender>
     
   </span>
   <br>
@@ -38,5 +38,5 @@
 
 <script setup lang="ts">
 import stepProgress from './components/stepProgress.vue'
-import calenderTouch from './components/calender/calenderTouch.vue';
+import calender from './components/calender/index.vue';
 </script>
