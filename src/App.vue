@@ -82,30 +82,40 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
     year: 2023,
     month: 9,
     taskByDate: [
-      {
-        total: 0,
-        done: 0,
-      },
-      {
-        total: 1,
-        done: 2,
-        task: [
-        ]
-      }
+      { total: 0, done: 0, task: [] },
+      { total: 3, done: 1, task: [] },
+      { total: 6, done: 6, task: [] },
+      { total: 6, done: 5, task: [] },
+      { total: 6, done: 8, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 6, done: 1, task: [] },
     ]
   },
     {
     year: 2023,
     month: 10,
     taskByDate: [
-      {
-        total: 0,
-        done: 0,
-      },
-      {
-        total: 5,
-        done: 1,
-        task: [
+      { total: 0, done: 0, task: [] },
+      { total: 3, done: 1, task: [] },
+      { total: 6, done: 6, task: [] },
+      { total: 6, done: 5, task: [] },
+      { total: 6, done: 8, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 6, done: 1, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 2, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 5, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 17, done: 0, task: [] },
+      { total: 3, done: 0, task: [
           {
             active: true,
             activityColor: 'red',
@@ -132,11 +142,16 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
           },
         ]
       },
-      {
-        total: 3,
-        done: 1,
-        task: []
-      }
+    ]
+  },
+    {
+    year: 2023,
+    month: 11,
+    taskByDate: [
+      { total: 0, done: 0, task: [] },
+      { total: 5, done: 0, task: [] },
+      { total: 0, done: 0, task: [] },
+      { total: 3, done: 0, task: [] },
     ]
   },
 ])
