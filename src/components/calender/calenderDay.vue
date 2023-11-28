@@ -1,16 +1,20 @@
 <template>
-    <div class="dateCol" 
+    <div class="date-col" 
         :class="
-            refSelectedMonth != calenderMonth ? 'bg-gray-300' : 
-            isSelected ? 'bg-blue-200' :
-            'bg-white' 
+            isSelected ? 'selected-date' :
+            refSelectedMonth == calenderMonth ? 'selected-month' : 
+            '' 
         "
     >
-        <span :class="isToday? 'rounded-full bg-green-500 p-1' : '' ">{{ calenderDate }}</span>
-        <p :class="
-            isToday ? 'bg-green-500' : 
-            isPast ? 'bg-red-500' : 
-            isFuture? 'bg-blue-500': '' "
+        <div>
+            <span :class="isToday? 'today' : '' ">{{ calenderDate }}</span>
+        </div>
+        <p v-if=" taskPending > 0 || isToday" 
+            class="task-mark"
+            :class="
+                isToday ? 'bg-green-500' : 
+                isPast ? 'bg-red-500' : 
+                isFuture? 'bg-green-500': '' "
         >{{ isToday ? (taskDone +'/'+ taskTotal) : taskPending }}</p>
     </div>
 </template>
@@ -22,47 +26,56 @@ import { defineProps } from 'vue';
 const props = defineProps({
     selectedDate: {
         type: Number,
+        default: new Date().getDate(),
         required: true
     },
     selectedMonth: {
         type: Number,
+        default: new Date().getMonth(),
         required: true
     },
     selectedYear: {
         type: Number,
+        default: new Date().getFullYear(),
         required: true
     },
 
     calenderDay: {
         type: Number,
+        default: new Date().getDay(),
         required: true
     },
     calenderDate: {
         type: Number,
+        default: new Date().getDate(),
         required: true
     },
     calenderMonth: {
         type: Number,
+        default: new Date().getMonth(),
         required: true
     },
     calenderYear: {
         type: Number,
+        default: new Date().getFullYear(),
         required: true
     },
 
     taskTotal: {
         type: Number,
+        default: 0,
         required: true
     },
     taskDone: {
         type: Number,
+        default: 0,
         required: true
     },
 });
 
-const taskTotal = ref(props.taskTotal);
-const taskDone = ref(props.taskDone);
-const taskPending = ref(taskTotal.value - taskDone.value);
+const taskTotal = computed(()=>props.taskTotal);
+const taskDone = computed(()=>props.taskDone);
+const taskPending = computed(()=>taskTotal.value - taskDone.value);
 
 const refSelectedDate  = computed(()=>props.selectedDate);
 const refSelectedMonth = computed(()=>props.selectedMonth);

@@ -1,9 +1,9 @@
 
-.container {
+.calender-component {
 	overflow-x: hidden;
 }
 
-.calender-header {
+.calender-component .calender-header {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
@@ -11,13 +11,13 @@
 	width: 100%;
 }
 
-.calender-header-item {
+.calender-component .calender-header-item {
 	flex: 1;
 	text-align: center;
 	border: .5px solid lightgray;
 }
 
-.calender-container {
+.calender-component .calender-container {
 	position: relative;
 	display: flex;
 	flex-direction: row;
@@ -30,11 +30,11 @@
 	transition: all 0.2s ease-in-out;
 }
 
-.calender-container.expanded {
+.calender-component .calender-container.expanded {
 	height: 20rem !important;
 }
 
-.calender {
+.calender-component .calender {
 	display: flex;
 	height: 100%;
 	flex: 0 0 100%;
@@ -43,7 +43,7 @@
 	flex-direction: column;
 }
 
-.calender-row {
+.calender-component .calender-row {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -53,7 +53,7 @@
 	transition: all 0.2s ease-in-out;
 }
 
-.calender-row.expanded {
+.calender-component .calender-row.expanded {
 	opacity: 1;
 	height: 4rem;
 }
@@ -80,17 +80,46 @@
 	}
 }
 
-.slide-left {
+.calender-component .slide-left {
 	animation: slide-left-frame .2s ease-in-out;
 }
 
-.slide-right {
+.calender-component .slide-right {
 	animation: slide-right-frame .2s ease-in-out;
 }
 
 
-.dateCol{
+.calender-component .date-col{
+	display: flex;
+	flex-direction: column;
     flex: 1;
     text-align: center;
     border: .5px solid lightgray;
+	padding: .2rem;
+	height: 100%;
+	background-color: grey;
 }
+
+.calender-component .date-col .task-mark{
+	width: 100%;
+	max-height: 50%;
+    text-align: center;
+	border-radius: .5rem;
+	margin-top: .5rem;
+}
+
+.calender-component .date-col .today {
+	display: inline;
+	border-radius: 50%;
+	background-color: green;
+	padding: .2rem;
+}
+
+.calender-component .date-col.selected-month {
+	background-color: white;
+}
+
+.calender-component .date-col.selected-date {
+	background-color: aqua !important;
+}
+/* rounded-full bg-green-500 p-1 */
