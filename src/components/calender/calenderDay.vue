@@ -1,20 +1,21 @@
 <template>
-    <div class="date-col" 
-        :class="
-            isSelected ? 'selected-date' :
-            refSelectedMonth == calenderMonth ? 'selected-month' : 
-            '' 
-        "
+    <div class="date-col"
+        :class="{
+            'weekly-view' : isWeekly,
+            'selected-date' : isSelected,
+            'selected-month' : isSameMonth,
+        }"
     >
         <div>
-            <span :class="isToday? 'today' : '' ">{{ calenderDate }}</span>
+            <span :class="isToday? 'today' : '' ">{{ calenderDate.getDate() }}</span>
         </div>
         <p v-if=" taskPending > 0 || isToday" 
             class="task-mark"
-            :class="
-                isToday ? 'bg-green-500' : 
-                isPast ? 'bg-red-500' : 
-                isFuture? 'bg-green-500': '' "
+            :class="isWeekly? 'weekly-view' : ''"
+            :style="
+                isToday ? 'background:green;' : 
+                isPast ? 'background:red;' : 
+                isFuture? 'background:green;': '' "
         >{{ isToday ? (taskDone +'/'+ taskTotal) : taskPending }}</p>
     </div>
 </template>
@@ -23,92 +24,35 @@
 import { ref, computed } from 'vue'
 import { defineProps } from 'vue';
 
-const props = defineProps({
-    selectedDate: {
-        type: Number,
-        default: new Date().getDate(),
-        required: true
-    },
-    selectedMonth: {
-        type: Number,
-        default: new Date().getMonth(),
-        required: true
-    },
-    selectedYear: {
-        type: Number,
-        default: new Date().getFullYear(),
-        required: true
-    },
+const props = defineProps<{
+    selectedDate: Date,
+    calenderDate: Date,
+    taskTotal: number,
+    taskDone: number,
+    isWeekly?: boolean,
+}>();
 
-    calenderDay: {
-        type: Number,
-        default: new Date().getDay(),
-        required: true
-    },
-    calenderDate: {
-        type: Number,
-        default: new Date().getDate(),
-        required: true
-    },
-    calenderMonth: {
-        type: Number,
-        default: new Date().getMonth(),
-        required: true
-    },
-    calenderYear: {
-        type: Number,
-        default: new Date().getFullYear(),
-        required: true
-    },
+const taskTotal     = computed(()=>props.taskTotal);
+const taskDone      = computed(()=>props.taskDone);
+const taskPending   = computed(()=>taskTotal.value - taskDone.value);
+const isWeekly      = computed(()=>props.isWeekly);
 
-    taskTotal: {
-        type: Number,
-        default: 0,
-        required: true
-    },
-    taskDone: {
-        type: Number,
-        default: 0,
-        required: true
-    },
-});
+const refSelected   = computed(()=>props.selectedDate);
+const refCalender   = computed(()=>props.calenderDate);
+const today         = new Date();
 
-const taskTotal = computed(()=>props.taskTotal);
-const taskDone = computed(()=>props.taskDone);
-const taskPending = computed(()=>taskTotal.value - taskDone.value);
+const isToday = computed<boolean>(()=>isSameDay(today, refCalender.value));
 
-const refSelectedDate  = computed(()=>props.selectedDate);
-const refSelectedMonth = computed(()=>props.selectedMonth);
-const refSelectedYear  = computed(()=>props.selectedYear);
+const isPast = computed<boolean>(()=> today > refCalender.value);
 
-const refCalenderDate  = computed(()=> props.calenderDate);
-const refCalenderMonth = computed(()=> props.calenderMonth);
-const refCalenderYear  = computed(()=> props.calenderYear);
+const isFuture = computed<boolean>(()=> today < refCalender.value );
 
-const today = new Date();
-const todayDate = today.getDate();
-const todayMonth = today.getMonth();
-const todayYear = today.getFullYear();
+const isSameMonth = computed<boolean>(()=>refSelected.value.getMonth() == refCalender.value.getMonth());
 
-const isToday = computed(()=>
-    todayDate == refCalenderDate.value && todayMonth == refCalenderMonth.value && todayYear == refCalenderYear.value
-);
-const isPast = computed(()=>
-    todayYear > refCalenderYear.value || 
-    (todayYear == refCalenderYear.value && todayMonth > refCalenderMonth.value) || 
-    (todayYear == refCalenderYear.value && todayMonth == refCalenderMonth.value && todayDate > refCalenderDate.value)
-);
+const isSelected = computed<boolean>(()=>isSameDay(refSelected.value, refCalender.value));
 
-const isFuture = computed(()=>
-    todayYear < refCalenderYear.value || 
-    (todayYear == refCalenderYear.value && todayMonth < refCalenderMonth.value) || 
-    (todayYear == refCalenderYear.value && todayMonth == refCalenderMonth.value && todayDate < refCalenderDate.value)
-);
-
-const isSelected = computed(()=>{
-    return refSelectedDate.value == refCalenderDate.value && 
-        refSelectedMonth.value == refCalenderMonth.value && 
-        refSelectedYear.value == refCalenderYear.value;
-});
+function isSameDay(d1: Date, d2: Date): boolean {
+    return Math.floor(d1.getTime()/86400000) == Math.floor(d2.getTime()/86400000)
+}
 
 </script>

@@ -29,21 +29,26 @@
 
     <hr/> -->
 
+    <button @click="displayType = calenderType.displayType.week">week</button>
+	  <button @click="displayType = calenderType.displayType.month">month</button>
     <calender 
       @selected-date="handleSelectedDate"
-      :selected-date="selectedDate.date"
-      :selected-month="selectedDate.month"
-      :selected-year="selectedDate.year"
+      @viewing-date="handleViewingDate"
+      :selected-date="selectedDate"
       :calender-task-data="calenderTaskData"
-      :display-type="calenderType.displayType.date"
+      :header="true"
+      :display-type="displayType"
+      :timeFrom="8"
+      :timeTo="20"
     ></calender>
 
-    <pre>calender emit "selected-date" : {{selectedDate}}</pre>
+    <pre>calender emit "selected-date" : <br>{{selectedDate}}</pre>
+    <pre>calender emit "viewing-date" : <br>{{viewingDate}}</pre>
 
 
     <p>123123213</p>
     <arrowProgress>
-      <arrow status="done">
+      <arrow  status="done">
         step 1 
       </arrow>
       <arrow status="current">
@@ -70,12 +75,9 @@ import arrow from './components/arrowProgress/arrow.vue';
 
 import * as calenderType from './types/calenderType';
 
-let selectedDate = ref({
-  day: new Date().getDay(),
-  date: new Date().getDate(),
-  month: new Date().getMonth(),
-  year: new Date().getFullYear(),
-});
+let selectedDate = ref<Date>(new Date());
+let viewingDate = ref<Date>(new Date());
+let displayType = ref<calenderType.displayType>(calenderType.displayType.month);
 
 const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
   {
@@ -119,26 +121,20 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
           {
             active: true,
             activityColor: 'red',
-            activityStartDate: '2023-11-25',
-            activityStartTime: '12:00:00',
-            activityEndDate: '2023-11-25',
-            activityEndTime: '12:30:00',
+            activityStart: new Date('2023-10-21 12:00:00'),
+            activityEnd: new Date('2023-10-21 14:00:00'),
           },
           {
             active: true,
             activityColor: 'blue',
-            activityStartDate: '2023-11-26',
-            activityStartTime: '11:00:00',
-            activityEndDate: '2023-11-26',
-            activityEndTime: '16:00:00',
+            activityStart: new Date('2023-10-22 13:00:00'),
+            activityEnd: new Date('2023-10-22 16:00:00'),
           },
           {
             active: true,
             activityColor: 'green',
-            activityStartDate: '2023-11-26',
-            activityStartTime: '18:00:00',
-            activityEndDate: '2023-11-26',
-            activityEndTime: '19:00:00',
+            activityStart: new Date('2023-10-21 09:00:00'),
+            activityEnd: new Date('2023-10-21 11:00:00'),
           },
         ]
       },
@@ -156,7 +152,11 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
   },
 ])
 
-function handleSelectedDate(data: { day: number; date: number; month: number; year: number}) {
-  selectedDate.value = data;
+function handleSelectedDate(date: Date) {
+  selectedDate.value = date;
+}
+
+function handleViewingDate(date: Date) {
+  viewingDate.value = date;
 }
 </script>

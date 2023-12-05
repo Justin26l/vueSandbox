@@ -1,13 +1,10 @@
 export enum displayType {
-  date = 'date',
-  timeline = 'timeline'
+  month,
+  week
 }
 
-export interface Day extends TaskByDate {
-	day: number;
-	date: number;
-	month: number;
-	year: number;
+export interface dateObj extends TaskByDate {
+	date: Date;
 }
 
 export interface TaskByDate {
@@ -19,10 +16,8 @@ export interface TaskByDate {
 export interface Task {
   active: boolean;
   activityColor: string;
-  activityStartDate: string;
-  activityStartTime: string;
-  activityEndDate: string;
-  activityEndTime: string;
+  activityStart: Date;
+  activityEnd: Date;
   [key: string]: any;
 }
 

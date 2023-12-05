@@ -1,14 +1,50 @@
 
 .calender-component {
-	overflow-x: hidden;
+	overflow: hidden;
+}
+.calender-component .calender-body{
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
 }
 
-.calender-component .calender-header {
+.calender-component .calender-main{
+	width:90%;
+	flex:1;
+	overflow:hidden
+}
+
+.calender-component .calender-top-bar {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
 	align-items: center;
 	width: 100%;
+}
+.calender-component .calender-side-bar {
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	flex-wrap: nowrap;
+	height:100%;
+	width:0%;
+	transition: all .2s ease-in-out;
+}
+.calender-component .calender-side-bar.show{
+	width:5%;
+}
+.calender-component .calender-side-bar .calender-side-item {
+	display: flex;
+	flex-direction: row;
+	flex:1;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	border: .5px solid lightgray;
 }
 
 .calender-component .calender-header-item {
@@ -27,7 +63,7 @@
 	max-width: 100vw;
 	overflow-x: visible;
 	touch-action: none;
-	transition: all 0.2s ease-in-out;
+	transition: all .2s ease-in-out;
 }
 
 .calender-component .calender-container.expanded {
@@ -36,6 +72,7 @@
 
 .calender-component .calender {
 	display: flex;
+	position: relative;
 	height: 100%;
 	flex: 0 0 100%;
 	min-width: 0;
@@ -50,12 +87,16 @@
 	background-color: green;
 	opacity: 0;
 	height: 0px;
-	transition: all 0.2s ease-in-out;
+	transition: all .2s ease-in-out;
 }
 
-.calender-component .calender-row.expanded {
+.calender-component .calender-row.show {
 	opacity: 1;
 	height: 4rem;
+}
+
+.calender-component .calender-row.weekly-view {
+	height: 100%;
 }
 
 @keyframes slide-left-frame {
@@ -100,19 +141,8 @@
 	background-color: grey;
 }
 
-.calender-component .date-col .task-mark{
-	width: 100%;
-	max-height: 50%;
-    text-align: center;
-	border-radius: .5rem;
-	margin-top: .5rem;
-}
-
-.calender-component .date-col .today {
-	display: inline;
-	border-radius: 50%;
-	background-color: green;
-	padding: .2rem;
+.calender-component .date-col.weekly-view {
+	height: 100%;
 }
 
 .calender-component .date-col.selected-month {
@@ -122,4 +152,27 @@
 .calender-component .date-col.selected-date {
 	background-color: aqua !important;
 }
+
+.calender-component .date-col .task-mark{
+	width: 100%;
+	max-height: 50%;
+    text-align: center;
+	border-radius: .5rem;
+	margin-top: .5rem;
+
+	transition: all .1s ease-in-out;
+}
+
+.calender-component .date-col .task-mark.weekly-view{
+	height:0px;
+	display: none;
+}
+
+.calender-component .date-col .today {
+	display: inline;
+	border-radius: 50%;
+	background-color: green;
+	padding: .2rem;
+}
+
 /* rounded-full bg-green-500 p-1 */
