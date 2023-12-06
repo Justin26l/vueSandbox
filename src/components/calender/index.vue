@@ -28,7 +28,6 @@
 								'show' : (!displayWeekly && calenderExpand) || rowDisplayOnFold == index, 
 								'weekly-view' : displayWeekly && rowDisplayOnFold == index,
 							}">
-							{{ index }}
 							<calenderDay v-for="(days, idx) in calenderWeek" :key="idx" 
 								@click="updateSelectedDate(days.date)" 
 								:selectedDate="selectedDate" 
