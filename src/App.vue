@@ -46,7 +46,7 @@
     <pre>calender emit "viewing-date" : <br>{{viewingDate}}</pre> -->
 
 
-    <p>123123213</p>
+    <!-- <p>123123213</p>
     <arrowProgress>
       <arrow status="done">
         step 1
@@ -58,7 +58,7 @@
         step 3
       </arrow>
     </arrowProgress>
-    <p>123123213</p>
+    <p>123123213</p> -->
 
   </span>
   <br>
@@ -84,7 +84,27 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
     year: 2023,
     month: 9,
     taskByDate: [
-      { total: 3, done: 1, task: [] },
+      { total: 3, done: 1, task: [
+          {
+            active: true,
+            activityColor: 'red',
+            activityStart: new Date('2023-10-21 12:00:00'),
+            activityEnd: new Date('2023-10-21 14:00:00'),
+          },
+          {
+            active: true,
+            activityColor: 'blue',
+            activityStart: new Date('2023-10-22 13:00:00'),
+            activityEnd: new Date('2023-10-22 16:45:00'),
+          },
+          {
+            active: true,
+            activityColor: 'green',
+            activityStart: new Date('2023-10-21 09:30:00'),
+            activityEnd: new Date('2023-10-21 11:00:00'),
+          },
+        ]
+      }
     ]
   },
   {
@@ -113,16 +133,54 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
           },
         ]
       },
-      { total: 0, done: 0, task: [] },
-      { total: 3, done: 1, task: [] },
+      { total: 3, done: 1, task: [
+          {
+            active: true,
+            activityColor: 'red',
+            activityStart: new Date('2023-10-21 12:00:00'),
+            activityEnd: new Date('2023-10-21 14:00:00'),
+          },
+          {
+            active: true,
+            activityColor: 'blue',
+            activityStart: new Date('2023-10-22 13:00:00'),
+            activityEnd: new Date('2023-10-22 16:45:00'),
+          },
+          {
+            active: true,
+            activityColor: 'green',
+            activityStart: new Date('2023-10-21 09:30:00'),
+            activityEnd: new Date('2023-10-21 11:00:00'),
+          },
+        ]
+      },
     ]
   },
   {
     year: 2023,
     month: 11,
     taskByDate: [
-      { total: 0, done: 0, task: [] },
-      { total: 5, done: 0, task: [] },
+      { total: 5, done: 0, task: [
+          {
+            active: true,
+            activityColor: 'red',
+            activityStart: new Date('2023-10-21 12:00:00'),
+            activityEnd: new Date('2023-10-21 14:00:00'),
+          },
+          {
+            active: true,
+            activityColor: 'blue',
+            activityStart: new Date('2023-10-22 13:00:00'),
+            activityEnd: new Date('2023-10-22 16:45:00'),
+          },
+          {
+            active: true,
+            activityColor: 'green',
+            activityStart: new Date('2023-10-21 09:30:00'),
+            activityEnd: new Date('2023-10-21 11:00:00'),
+          },
+        ]
+      },
     ]
   },
 ])

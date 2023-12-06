@@ -43,7 +43,7 @@
 
 								:isSwiping="
 									i==0 ? ( index==4 ? isSwiping : false ) :
-									i==1 ? ( rowDisplayOnFold == index || rowDisplayOnFold == index + 1 || rowDisplayOnFold == index -1  ? isSwiping : false ) :
+									i==1 ? isSwiping ://( rowDisplayOnFold == index || rowDisplayOnFold == index + 1 || rowDisplayOnFold == index -1  ? isSwiping : false ) :
 									i==2 ? ( index==0 ? isSwiping: false ) :
 									false
 								"
@@ -184,6 +184,14 @@ function getMonthlyCalendar(year: number, month: number, calenderTaskData: calen
 // };
 function updateSelectedDate(date: Date): void {
 	selectedDate.value = date;
+	//  check calender data is same as selected date
+	if (calenderDate.value.getMonth() > selectedDate.value.getMonth()) {
+		calenderPrevMonth();
+	}
+	else if (calenderDate.value.getMonth() < selectedDate.value.getMonth()) {
+		calenderNextMonth();
+	}
+
 	useSelectedRow();
 	emit('selectedDate', selectedDate.value);	
 }
