@@ -1,5 +1,5 @@
 <template>
-    <div class="date-col"
+    <div class="date-col border-1"
         :class="{
             'weekly-view' : isWeekly,
             'selected-date' : isSelected,

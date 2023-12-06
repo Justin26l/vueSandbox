@@ -1,24 +1,25 @@
 <template>
-	<div class="calender-component">
+	<div class="cal">
 		<div>
 			<h2 v-if="props.header">{{ calenderDate.getFullYear() + ' ' + month[calenderDate.getMonth()] }}</h2>
 		</div>
-		<div class="calender-body">
+		<div class="calender-body border-1" :class="calenderExpand ? 'expanded' : ''">
 
-			<div class="calender-side-bar" :class="displayWeekly?'show':''">
-				<!-- loop time to - timefrom and display number -->
-				<span v-for="i in timeline" :key="i" class="calender-side-item">
-					{{ props.timeFrom + i }}
+			<div class="calender-side-bar" :class="displayWeekly && calenderExpand?'show':''">
+				<span class="calender-header-item"></span>
+				<!-- loop (time to - timefrom) times and display timefrom + i -->
+				<span v-for="i in timeLength + 1" :key="i" class="calender-header-item">
+					{{ props.timeFrom + (i-1) }}
 				</span>
 			</div>
 			<div class="calender-main">
-				<div class="calender-top-bar">
+				<div class="calender-header">
 					<span v-for="day in days" :key="day" class="calender-header-item">
 						{{ day }}
 					</span>
 				</div>
 
-				<div ref="calenderContainerMonth" class="calender-container" :class="{
+				<div ref="calenderContainer" class="calender-grid" :class="{
 					'expanded' : calenderExpand,
 				}">
 					<div v-for="(calenderMonth, i) in calenderData" :key="i" :id="'calMon' + i" class="calender">
@@ -56,6 +57,9 @@
 
 			calenderExpand: calenderExpand,
 			displayType: displayType,
+			timeFrom: props.timeFrom,
+			timeTo: props.timeTo,
+			timeLength: timeLength,
 		} }}
 	</pre>
 </template>
@@ -84,12 +88,15 @@ const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'O
 
 const calenderDate = ref<Date>(props.selectedDate);
 const selectedDate = ref<Date>(props.selectedDate);
-const timeline = ref<number[]>(Array.from({ length: props.timeTo - props.timeFrom + 1 }, (_, index) => props.timeFrom + index));
 
+const displayWeekly = computed<boolean>(() => displayType.value === calenderType.displayType.week);
 const displayType = computed<calenderType.displayType>(()=>props.displayType);
-const displayWeekly = computed<boolean>(()=>displayType.value === calenderType.displayType.week);
+watch(displayType, (newDisplayType) => {
+  calenderExpand.value = newDisplayType === calenderType.displayType.week;
+});
 let rowDisplayOnFold = ref<number>(0);
 
+const timeLength = computed<number>(() => props.timeTo - props.timeFrom);
 // calender days event
 const calenderTaskDataRef = computed<calenderType.CalenderDataItem[]>(() => {
 	return props.calenderTaskData;
@@ -102,8 +109,8 @@ const calenderData = ref<calenderType.dateObj[][][]>([
 ]);
 
 // touch event
-const calenderContainerMonth = ref<Element>(); 
-const { isSwiping: isSwiping, direction: direction } = useSwipe(calenderContainerMonth);
+const calenderContainer = ref<Element>(); 
+const { isSwiping: isSwiping, direction: direction } = useSwipe(calenderContainer);
 
 const calenderExpand = ref(false);
 
@@ -169,9 +176,9 @@ function updateSelectedDate(date: Date): void {
 
 function calenderPrevMonth(): void {
 	resetRowDisplayOnFold(4);
-	calenderContainerMonth.value?.classList.add('slide-right');
+	calenderContainer.value?.classList.add('slide-right');
 	setTimeout(() => {
-		calenderContainerMonth.value?.classList.remove('slide-right');
+		calenderContainer.value?.classList.remove('slide-right');
 
 		calenderDate.value.setMonth(calenderDate.value.getMonth() - 1);
 		emit('viewingDate', calenderDate.value);
@@ -185,9 +192,9 @@ function calenderPrevMonth(): void {
 
 function calenderNextMonth(): void {
 	resetRowDisplayOnFold(0);
-	calenderContainerMonth.value?.classList.add('slide-left');
+	calenderContainer.value?.classList.add('slide-left');
 	setTimeout(() => {
-		calenderContainerMonth.value?.classList.remove('slide-left');
+		calenderContainer.value?.classList.remove('slide-left');
 
 		calenderDate.value.setMonth(calenderDate.value.getMonth() + 1);
 		calenderData.value = [

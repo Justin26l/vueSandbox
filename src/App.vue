@@ -42,8 +42,8 @@
       :timeTo="20"
     ></calender>
 
-    <pre>calender emit "selected-date" : <br>{{selectedDate}}</pre>
-    <pre>calender emit "viewing-date" : <br>{{viewingDate}}</pre>
+    <!-- <pre>calender emit "selected-date" : <br>{{selectedDate}}</pre>
+    <pre>calender emit "viewing-date" : <br>{{viewingDate}}</pre> -->
 
 
     <p>123123213</p>
