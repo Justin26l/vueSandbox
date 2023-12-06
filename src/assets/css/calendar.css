@@ -1,28 +1,37 @@
-
+:root{
+	--cal-border-color: lightgray;
+	--cal-header-height: 1.5rem;
+	--cal-column-height: 4rem;
+	--cal-header-font-size: .8rem;
+}
 .cal {
 	overflow: hidden;
 	position: relative;
 	width: 100%;
 }
 
+.cal .text-center {
+	text-align: center;
+}
+
 .cal .border-1{
-	border: .5px solid lightgray;
+	border: .5px solid var(--cal-border-color);
 }
 
 .cal .border-t-1{
-	border-top: .5px solid lightgray;
+	border-top: .5px solid var(--cal-border-color);
 }
 
 .cal .border-b-1{
-	border-bottom: .5px solid lightgray;
+	border-bottom: .5px solid var(--cal-border-color);
 }
 
 .cal .border-s-1{
-	border-left: .5px solid lightgray;
+	border-left: .5px solid var(--cal-border-color);
 }
 
 .cal .border-e-1{
-	border-right: .5px solid lightgray;
+	border-right: .5px solid var(--cal-border-color);
 }
 
 .cal .calender-body{
@@ -32,12 +41,12 @@
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	height: calc( 4rem + 1.5rem );
+	height: calc( var(--cal-column-height) + var(--cal-header-height) );
 	transition: all .2s ease-in-out;
 }
 
 .cal .calender-body.expanded {
-	height: calc( 4rem * 5 + 1.5rem);
+	height: calc( var(--cal-column-height) * 5 + var(--cal-header-height));
 }
 
 .cal .calender-side-bar {
@@ -83,19 +92,20 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 1.5rem;
+	height: var(--cal-header-height);
 }
 
 .cal .calender-grid {
 	position: relative;
 	display: flex;
 	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
 	flex-wrap: nowrap;
 	overflow-x: visible;
 	touch-action: none;
 	transition: all .2s ease-in-out;
-	height: calc(100% - 1.5rem);
+	height: calc(100% - var(--cal-header-height));
 }
 
 .cal .calender {
@@ -118,7 +128,7 @@
 
 .cal .calender-row.show {
 	opacity: 1;
-	height: 4rem;
+	height: var(--cal-column-height);
 }
 
 .cal .calender-row.weekly-view {
@@ -127,12 +137,10 @@
 
 @keyframes slide-left-frame {
 	from {
-		/* Starting state of the animation */
 		transform: translateX(0%);
 	}
 
 	to {
-		/* Ending state of the animation */
 		transform: translateX(-100%);
 	}
 }
@@ -195,10 +203,25 @@
 }
 
 .cal .date-col .today {
-	display: inline;
-	border-radius: 50%;
+	display: inline-block;
+	aspect-ratio: 1/1;
+	border-radius: 100%;
 	background-color: green;
+	width: 1rem;
 	padding: .2rem;
 }
 
-/* rounded-full bg-green-500 p-1 */
+.cal .date-col .task-item{
+	position: absolute;
+	opacity: 0;
+	display:none;
+	transition: all .1s ease-in-out;
+}
+.cal .date-col.weekly-view .task-item{
+	position: absolute;
+	opacity: 1;
+	display:block;
+	transition: all .1s ease-in-out;
+	width: 1rem;
+	border-radius: 1rem;
+}

@@ -28,15 +28,33 @@
 								'show' : (!displayWeekly && calenderExpand) || rowDisplayOnFold == index, 
 								'weekly-view' : displayWeekly && rowDisplayOnFold == index,
 							}">
-
+							{{ index }}
 							<calenderDay v-for="(days, idx) in calenderWeek" :key="idx" 
 								@click="updateSelectedDate(days.date)" 
-								:isWeekly="displayWeekly"
 								:selectedDate="selectedDate" 
 								:calenderDate="days.date" 
 								
-								:taskTotal="days.total"
-								:taskDone="days.done">
+								:total="days.total"
+								:done="days.done"
+								:task="days.task"
+
+								:isWeekly="displayWeekly"
+								:timeFrom="props.timeFrom"
+								:timeTo="props.timeTo"
+
+								:isSwiping="
+									i==0 ? ( index==4 ? isSwiping : false ) :
+									i==1 ? ( rowDisplayOnFold == index || rowDisplayOnFold == index + 1 || rowDisplayOnFold == index -1  ? isSwiping : false ) :
+									i==2 ? ( index==0 ? isSwiping: false ) :
+									false
+								"
+							>
+							<!-- 
+								i==0 ? index==4 ? isSwiping:
+								i==1 ? rowDisplayOnFold == index || rowDisplayOnFold == index + 1 || rowDisplayOnFold == index -1  ? isSwiping:
+								i==2 ? index==0 ? isSwiping:
+								false
+							-->
 							</calenderDay>
 						</div>
 					</div>
@@ -118,11 +136,7 @@ function isSameDay(date1: Date, date2: Date): boolean {
 	return Math.floor(date1.getTime()/86400000) === Math.floor(date2.getTime()/86400000);
 }
 function useSelectedRow(): void {
-	let i=0;
 	rowDisplayOnFold.value = calenderData.value[1].findIndex((week) => {
-		console.log(i)
-		i++;
-
 		return week.some((day) => {
 			return isSameDay(day.date, selectedDate.value);
 		});
@@ -132,7 +146,7 @@ function resetRowDisplayOnFold(index?:number): void {
 	rowDisplayOnFold.value = index || 0;
 };
 
-function getMonthlyCalendar(year: number, month: number, calenderTaskData?: calenderType.CalenderDataItem[]): calenderType.dateObj[][] {
+function getMonthlyCalendar(year: number, month: number, calenderTaskData: calenderType.CalenderDataItem[]): calenderType.dateObj[][] {
 	let calender = [];
 
 	year = month < 0 ? year - 1 : month > 11 ? year + 1 : year;
@@ -142,6 +156,9 @@ function getMonthlyCalendar(year: number, month: number, calenderTaskData?: cale
 	const taskDataMonth = calenderTaskData?.find((data) => {
 		return data.year === year && data.month === month;
 	});
+
+	// insert padding to match array with date [dummy, 1, 2, 3 ... 30, 31 ];
+	taskDataMonth?.taskByDate.unshift({ total: 0, done: 0, task: [] });
 
 	for (let weekCount = 0; weekCount < 5; weekCount++) {
 		let week = [];

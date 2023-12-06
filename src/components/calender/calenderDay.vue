@@ -1,42 +1,60 @@
 <template>
-    <div class="date-col border-1"
+    <div
+        ref="dateColRef"
+        class="date-col border-1"
         :class="{
             'weekly-view' : isWeekly,
             'selected-date' : isSelected,
             'selected-month' : isSameMonth,
         }"
+        :style=" isSwiping ? 'background-color: red;' : ''"
     >
-        <div>
-            <span :class="isToday? 'today' : '' ">{{ calenderDate.getDate() }}</span>
+        <!-- date -->
+        <div class="text-center">
+            <div :class="isToday? 'today' : '' ">
+                {{ calenderDate.getDate() }}
+            </div>
         </div>
-        <p v-if=" taskPending > 0 || isToday" 
+        <!-- monthly -->
+        <p v-if="! isWeekly && (taskPending > 0 || isToday)" 
             class="task-mark"
-            :class="isWeekly? 'weekly-view' : ''"
             :style="
                 isToday ? 'background:green;' : 
                 isPast ? 'background:red;' : 
                 isFuture? 'background:green;': '' "
         >{{ isToday ? (taskDone +'/'+ taskTotal) : taskPending }}</p>
+
     </div>
 </template>
 
 <script setup lang='ts'>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { defineProps } from 'vue';
+import type { Task, TaskByDate } from '@/types/calenderType';
 
 const props = defineProps<{
     selectedDate: Date,
     calenderDate: Date,
-    taskTotal: number,
-    taskDone: number,
     isWeekly?: boolean,
-}>();
+    timeFrom?: number,
+    timeTo?: number,
+    isSwiping?: boolean,
+} & TaskByDate>();
 
-const taskTotal     = computed(()=>props.taskTotal);
-const taskDone      = computed(()=>props.taskDone);
-const taskPending   = computed(()=>taskTotal.value - taskDone.value);
-const isWeekly      = computed(()=>props.isWeekly);
+const dateColRef   = ref<HTMLElement|null>(null);
 
+const taskTotal     = computed<number>(()=>props.total);
+const taskDone      = computed<number>(()=>props.done);
+const taskPending   = computed<number>(()=>taskTotal.value - taskDone.value);
+const taskList      = computed<Task[]>(()=>props.task);
+const isWeekly      = computed<boolean>(()=>props.isWeekly);
+const isSwiping     = computed<boolean>(()=>{
+    if(isWeekly.value && dateColRef.value != null) {
+        console.log('call');
+        drawTaskItemTimeout(300);
+    }
+    return props.isSwiping
+});
 const refSelected   = computed(()=>props.selectedDate);
 const refCalender   = computed(()=>props.calenderDate);
 const today         = new Date();
@@ -51,8 +69,62 @@ const isSameMonth = computed<boolean>(()=>refSelected.value.getMonth() == refCal
 
 const isSelected = computed<boolean>(()=>isSameDay(refSelected.value, refCalender.value));
 
+// draw task
+function drawTaskItemTimeout(delay:number){
+    setTimeout(()=>{
+        drawTaskItem();
+    }, delay);
+}
+
+function drawTaskItem(){
+    // get dateColRef height
+    if ( dateColRef.value == null ) {
+        return;
+    };
+
+    if ( dateColRef.value.clientHeight < 100 ){
+        clearTaskItem()
+        return;
+    }
+
+    const timeFrom      :number = props.timeFrom||0;
+    const timeTo        :number = props.timeTo||24;
+    const timeLength    :number = timeTo - timeFrom;
+    const clientHeight  :number = dateColRef.value.clientHeight;
+    const hourHeight    :number = clientHeight / timeLength;
+
+    clearTaskItem();
+    // add element by each taskList's item start time & end time using hourHeight
+    taskList.value.forEach((task)=>{
+        const start = to24h(task.activityStart);
+        const end = to24h(task.activityEnd);
+        const height = (end - start) * hourHeight;
+
+        const div = document.createElement('div');
+        div.classList.add('task-item');
+        div.style.height = height + 'px';
+        div.style.top = (start - timeFrom) * hourHeight + 'px';
+        div.style.backgroundColor = task.activityColor;
+        // div.innerHTML = start+end.toString();
+
+        dateColRef.value?.appendChild(div);
+    });
+}
+
+function clearTaskItem(){
+    // remove all .task-item element
+    if( dateColRef.value == null ) { return;}
+    const taskItems = dateColRef.value.querySelectorAll('.task-item');
+    taskItems.forEach((item)=>{
+        item.remove();
+    });
+}
 function isSameDay(d1: Date, d2: Date): boolean {
     return Math.floor(d1.getTime()/86400000) == Math.floor(d2.getTime()/86400000)
+}
+
+function to24h(date: Date) {
+    return date.getHours() + date.getMinutes()/60;
 }
 
 </script>

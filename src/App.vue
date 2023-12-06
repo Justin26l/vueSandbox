@@ -48,8 +48,8 @@
 
     <p>123123213</p>
     <arrowProgress>
-      <arrow  status="done">
-        step 1 
+      <arrow status="done">
+        step 1
       </arrow>
       <arrow status="current">
         step 2
@@ -84,40 +84,15 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
     year: 2023,
     month: 9,
     taskByDate: [
-      { total: 0, done: 0, task: [] },
       { total: 3, done: 1, task: [] },
-      { total: 6, done: 6, task: [] },
-      { total: 6, done: 5, task: [] },
-      { total: 6, done: 8, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 6, done: 1, task: [] },
     ]
   },
-    {
+  {
     year: 2023,
     month: 10,
     taskByDate: [
-      { total: 0, done: 0, task: [] },
-      { total: 3, done: 1, task: [] },
-      { total: 6, done: 6, task: [] },
-      { total: 6, done: 5, task: [] },
-      { total: 6, done: 8, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 6, done: 1, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 2, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 5, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 17, done: 0, task: [] },
-      { total: 3, done: 0, task: [
+      {
+        total: 333, done: 0, task: [
           {
             active: true,
             activityColor: 'red',
@@ -128,26 +103,26 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
             active: true,
             activityColor: 'blue',
             activityStart: new Date('2023-10-22 13:00:00'),
-            activityEnd: new Date('2023-10-22 16:00:00'),
+            activityEnd: new Date('2023-10-22 16:45:00'),
           },
           {
             active: true,
             activityColor: 'green',
-            activityStart: new Date('2023-10-21 09:00:00'),
+            activityStart: new Date('2023-10-21 09:30:00'),
             activityEnd: new Date('2023-10-21 11:00:00'),
           },
         ]
       },
+      { total: 0, done: 0, task: [] },
+      { total: 3, done: 1, task: [] },
     ]
   },
-    {
+  {
     year: 2023,
     month: 11,
     taskByDate: [
       { total: 0, done: 0, task: [] },
       { total: 5, done: 0, task: [] },
-      { total: 0, done: 0, task: [] },
-      { total: 3, done: 0, task: [] },
     ]
   },
 ])

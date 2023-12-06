@@ -10,7 +10,7 @@ export interface dateObj extends TaskByDate {
 export interface TaskByDate {
     total: number;
     done: number;
-    task?: Task[];
+    task: Task[];
 }
 
 export interface Task {
