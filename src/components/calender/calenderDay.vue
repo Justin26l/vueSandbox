@@ -1,5 +1,6 @@
 <template>
     <div
+    @click="consoel.log()"
         ref="dateColRef"
         class="date-col border-1"
         :class="{
@@ -7,7 +8,6 @@
             'selected-date' : isSelected,
             'selected-month' : isSameMonth,
         }"
-        :style=" isSwiping ? 'background-color: red;' : ''"
     >
         <!-- date -->
         <div class="text-center">
@@ -18,10 +18,11 @@
         <!-- monthly -->
         <p v-if="! isWeekly && (taskPending > 0 || isToday)" 
             class="task-mark"
-            :style="
-                isToday ? 'background:green;' : 
-                isPast ? 'background:red;' : 
-                isFuture? 'background:green;': '' "
+            :class="{
+                'mark-past'     :isPast  ,
+                'mark-today'    :isToday ,
+                'mark-future'   :isFuture,
+            }"
         >{{ isToday ? (taskDone +'/'+ taskTotal) : taskPending }}</p>
 
     </div>
@@ -49,13 +50,7 @@ const taskDone      = computed<number>(()=>props.done);
 const taskPending   = computed<number>(()=>taskTotal.value - taskDone.value);
 const taskList      = computed<Task[]>(()=>props.task);
 const isWeekly      = computed<boolean>(()=>props.isWeekly);
-const isSwiping     = computed<boolean>(()=>{
-    if(isWeekly.value && dateColRef.value != null && !props.isSwiping) {
-        console.log('call');
-        drawTaskItemTimeout(300);
-    }
-    return props.isSwiping
-});
+
 const refSelected   = computed(()=>props.selectedDate);
 const refCalender   = computed(()=>props.calenderDate);
 const today         = new Date();
@@ -128,4 +123,13 @@ function to24h(date: Date) {
     return date.getHours() + date.getMinutes()/60;
 }
 
+// if(isWeekly.value && dateColRef.value != null && !props.isSwiping) {
+//         drawTaskItemTimeout(300);
+//     }
+
+watch(()=>props.isSwiping, (isSwiping)=>{
+    if(isWeekly.value && dateColRef.value != null && !isSwiping) {
+        drawTaskItemTimeout(300);
+    }
+});
 </script>

@@ -248,9 +248,8 @@ watch([isSwiping, direction], ([isSwiping, direction]) => {
 		else if (direction === 'up') {
 			calenderExpand.value = false
 		}
+		// monthly expanded only
 		else if (calenderExpand.value && !displayWeekly.value) {
-			console.log('B');
-
 			if (direction === 'left') {
 				calenderNextMonth();
 			}
@@ -258,8 +257,8 @@ watch([isSwiping, direction], ([isSwiping, direction]) => {
 				calenderPrevMonth();
 			};
 		}
+		// weekly & folded
 		else if (!calenderExpand.value || displayWeekly.value) {
-			console.log('A');
 			if (direction === 'left') {
 				if(rowSelected.value >= rowthreshold.value){
 					calenderNextMonth();

@@ -3,6 +3,11 @@
 	--cal-header-height: 1.5rem;
 	--cal-column-height: 4rem;
 	--cal-header-font-size: .8rem;
+
+	--cal-col-past: #ffcccc;
+	--cal-col-today: #ffffcc;
+	--cal-col-future: #ccffcc;
+	--cal-col-dimm: #f2f2f2;
 }
 .cal {
 	overflow: hidden;
@@ -172,7 +177,7 @@
 	padding: .2rem;
 	height: 100%;
 	box-sizing: border-box;
-	background-color: grey;
+	background-color: var(--cal-col-dimm);
 }
 
 .cal .date-col.weekly-view {
@@ -193,9 +198,20 @@
     text-align: center;
 	border-radius: .5rem;
 	margin-top: .5rem;
-
 	transition: all .1s ease-in-out;
 }
+
+.cal .date-col .task-mark.mark-past{
+	background-color: var(--cal-col-past);
+}
+.cal .date-col .task-mark.mark-today{
+	background-color: var(--cal-col-today);
+}
+.cal .date-col .task-mark.mark-future{
+	background-color: var(--cal-col-future);
+}
+
+
 
 .cal .date-col .task-mark.weekly-view{
 	height:0px;
