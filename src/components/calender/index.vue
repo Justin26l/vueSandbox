@@ -1,7 +1,7 @@
 <template>
 	<div class="cal">
 		<div>
-			<h2 v-if="props.header">{{ calenderDate.getFullYear() + ' ' + month[calenderDate.getMonth()] }}</h2>
+			<h2 v-if="props.header">{{ selectedDate.getFullYear() + ' ' + month[selectedDate.getMonth()] }}</h2>
 		</div>
 		<div class="calender-body border-1" :class="calenderExpand ? 'expanded' : ''">
 
@@ -23,13 +23,13 @@
 					'expanded' : calenderExpand,
 				}">
 					<div v-for="(calenderMonth, i) in calenderData" :key="i" :id="'calMon' + i" class="calender">
-						<div v-for="(calenderWeek, index) in calenderMonth" :key="index" :id="'calWeek' + index" class="calender-row"
+						<div v-for="(calenderWeek, index) in calenderMonth.calender" :key="index" :id="'calWeek' + index" class="calender-row"
 							:class="{
-								'show' : (!displayWeekly && calenderExpand) || rowDisplayOnFold == index, 
-								'weekly-view' : displayWeekly && rowDisplayOnFold == index,
+								'show' : (!displayWeekly && calenderExpand) || rowSelected == index, 
+								'weekly-view' : displayWeekly && rowSelected == index,
 							}">
 							<calenderDay v-for="(days, idx) in calenderWeek" :key="idx" 
-								@click="updateSelectedDate(days.date)" 
+								@click="updateSelectedDate(days.date, index, idx)" 
 								:selectedDate="selectedDate" 
 								:calenderDate="days.date" 
 								
@@ -41,19 +41,9 @@
 								:timeFrom="props.timeFrom"
 								:timeTo="props.timeTo"
 
-								:isSwiping="
-									i==0 ? ( index==4 ? isSwiping : false ) :
-									i==1 ? isSwiping ://( rowDisplayOnFold == index || rowDisplayOnFold == index + 1 || rowDisplayOnFold == index -1  ? isSwiping : false ) :
-									i==2 ? ( index==0 ? isSwiping: false ) :
-									false
+								:isSwiping="i==1 ? isSwiping :false
 								"
 							>
-							<!-- 
-								i==0 ? index==4 ? isSwiping:
-								i==1 ? rowDisplayOnFold == index || rowDisplayOnFold == index + 1 || rowDisplayOnFold == index -1  ? isSwiping:
-								i==2 ? index==0 ? isSwiping:
-								false
-							-->
 							</calenderDay>
 						</div>
 					</div>
@@ -65,18 +55,17 @@
 	</div>
 	<pre>
 		{{ {
-			isSwiping: isSwiping,
-			direction: direction,
-			rowDisplayOnFold: rowDisplayOnFold,
+			cal0: calenderData[0].calender[2][2].date.toDateString(),
+			cal1: calenderData[1].calender[2][2].date.toDateString(),
+			cal2: calenderData[2].calender[2][2].date.toDateString(),
+
+			rowSelected: rowSelected,
+			colSelected: colSelected,
+			rowthreshold: rowthreshold,
 
 			calender: calenderDate.toDateString(),
 			selected: selectedDate.toDateString(),
 
-			calenderExpand: calenderExpand,
-			displayType: displayType,
-			timeFrom: props.timeFrom,
-			timeTo: props.timeTo,
-			timeLength: timeLength,
 		} }}
 	</pre>
 </template>
@@ -103,7 +92,7 @@ const props = defineProps<{
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const calenderDate = ref<Date>(props.selectedDate);
+const calenderDate = ref<Date>(new Date());
 const selectedDate = ref<Date>(props.selectedDate);
 
 const displayWeekly = computed<boolean>(() => displayType.value === calenderType.displayType.week);
@@ -111,7 +100,10 @@ const displayType = computed<calenderType.displayType>(()=>props.displayType);
 watch(displayType, (newDisplayType) => {
   calenderExpand.value = newDisplayType === calenderType.displayType.week;
 });
-let rowDisplayOnFold = ref<number>(0);
+
+let rowSelected = ref<number>(0);
+let colSelected = ref<number>(0);
+let rowthreshold = computed(() => (calenderExpand.value && !displayWeekly.value) ? 4 : calenderData.value[1].rowthreshold);
 
 const timeLength = computed<number>(() => props.timeTo - props.timeFrom);
 // calender days event
@@ -119,7 +111,10 @@ const calenderTaskDataRef = computed<calenderType.CalenderDataItem[]>(() => {
 	return props.calenderTaskData;
 });
 
-const calenderData = ref<calenderType.dateObj[][][]>([
+const calenderData = ref<Array<{
+	rowthreshold: number;
+	calender: calenderType.dateObj[][];
+}>> ([
 	getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth() - 1, calenderTaskDataRef.value),
 	getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth()    , calenderTaskDataRef.value),
 	getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth() + 1, calenderTaskDataRef.value)
@@ -131,50 +126,58 @@ const { isSwiping: isSwiping, direction: direction } = useSwipe(calenderContaine
 
 const calenderExpand = ref(false);
 
-function isSameDay(date1: Date, date2: Date): boolean {
-	return Math.floor(date1.getTime()/86400000) === Math.floor(date2.getTime()/86400000);
-}
-function useSelectedRow(): void {
-	rowDisplayOnFold.value = calenderData.value[1].findIndex((week) => {
-		return week.some((day) => {
-			return isSameDay(day.date, selectedDate.value);
-		});
-	});
-}
-function resetRowDisplayOnFold(index?:number): void {
-	rowDisplayOnFold.value = index || 0;
-};
+// function isSameDay(date1: Date, date2: Date): boolean {
+// 	return Math.floor(date1.getTime()/86400000) === Math.floor(date2.getTime()/86400000);
+// }
 
-function getMonthlyCalendar(year: number, month: number, calenderTaskData: calenderType.CalenderDataItem[]): calenderType.dateObj[][] {
-	let calender = [];
+function getMonthlyCalendar(year: number, month: number, calenderTaskData: calenderType.CalenderDataItem[]): {
+	rowthreshold: number;
+	calender: calenderType.dateObj[][];
+} {
+	let calender : calenderType.dateObj[][] = [];
 
-	year = month < 0 ? year - 1 : month > 11 ? year + 1 : year;
-	month = month < 0 ? 11 : month > 11 ? 0 : month;
-
-	const firstDayOfMonth = new Date(year, month, 1).getDay() - 1;
-	const taskDataMonth = calenderTaskData?.find((data) => {
+	const firstDayOfMonth :number = new Date(year, month, 1).getDay() - 1;
+	const lastDateOfMonth :Date = new Date(year, month + 1, 0);
+	const targetMonth :calenderType.CalenderDataItem|undefined = calenderTaskData?.find((data) => {
 		return data.year === year && data.month === month;
 	});
 
-	// insert padding to match array with date [dummy, 1, 2, 3 ... 30, 31 ];
-	taskDataMonth?.taskByDate.unshift({ total: 0, done: 0, task: [] });
+	const prevMonthDate :Date = new Date(year, month-1, 1);
+	const prevMonth :calenderType.CalenderDataItem|undefined = calenderTaskData?.find((data) => {
+		return data.year === prevMonthDate.getFullYear() && data.month === prevMonthDate.getMonth();
+	});
+
+	const nextMonthDate :Date= new Date(year, month+1, 1);
+	const nextMonth :calenderType.CalenderDataItem|undefined = calenderTaskData?.find((data) => {
+		return data.year === nextMonthDate.getFullYear() && data.month === nextMonthDate.getMonth();
+	});
 
 	for (let weekCount = 0; weekCount < 5; weekCount++) {
-		let week = [];
+		let week :calenderType.dateObj[] = [];
 		for (let dayCount = 0; dayCount < 7; dayCount++) {
-			let dateObj = new Date(year, month, (dayCount - firstDayOfMonth) + (weekCount * 7));
-			const taskData = dateObj.getMonth() == month ? taskDataMonth?.taskByDate[dateObj.getDate()] : taskDataMonth?.taskByDate[0]
+			const dateObj = new Date(year, month, (dayCount - firstDayOfMonth) + (weekCount * 7));
+			const isTargetMonth = dateObj.getMonth() == month;
+
+			const dateTask = isTargetMonth ? targetMonth?.taskByDate[dateObj.getDate()-1] : 
+								dateObj.getMonth() < month ? prevMonth?.taskByDate[dateObj.getDate()-1] : 
+								nextMonth?.taskByDate[dateObj.getDate()-1];
+
 			week.push({
 				date: dateObj,
-				total: taskData?.total || 0,
-				done: taskData?.done || 0,
-				task: taskData?.task || [],
+				total: dateTask?.total || 0,
+				done: dateTask?.done || 0,
+				task: dateTask?.task || [],
 			});
 		}
 		calender.push(week);
 	};
 
-	return calender;
+	// if lastDateOfMonth is not found in calender[4], monthlyRowThreshold is 4
+	const rowthreshold = calender[4][6].date <= lastDateOfMonth ? 4 : 3;
+	return {
+		rowthreshold: rowthreshold,
+		calender: calender
+	};
 }
 
 // weekly view
@@ -182,32 +185,34 @@ function getMonthlyCalendar(year: number, month: number, calenderTaskData: calen
 // 	displayType.value = type;
 // 	displayWeekly.value = type === calenderType.displayType.week;
 // };
-function updateSelectedDate(date: Date): void {
+function updateSelectedDate(date: Date, row?:number, col?:number): void {
 	selectedDate.value = date;
-	//  check calender data is same as selected date
-	if (calenderDate.value.getMonth() > selectedDate.value.getMonth()) {
-		calenderPrevMonth();
+	if(col){
+		colSelected.value = col;
 	}
-	else if (calenderDate.value.getMonth() < selectedDate.value.getMonth()) {
-		calenderNextMonth();
+	if(row){
+		rowSelected.value = row;
 	}
-
-	useSelectedRow();
-	emit('selectedDate', selectedDate.value);	
+	emit('selectedDate', selectedDate.value);
 }
 
 // touch event
 
 function calenderPrevMonth(): void {
-	resetRowDisplayOnFold(4);
+	rowSelected.value = calenderData.value[0].rowthreshold;
+
+	if(calenderExpand.value && ! displayWeekly.value){
+		updateSelectedDate(new Date(calenderDate.value.getFullYear(), calenderDate.value.getMonth(), 0));
+	}
+	else {
+		updateSelectedDate(calenderData.value[0].calender[calenderData.value[0].rowthreshold][colSelected.value].date);
+	}
 	calenderContainer.value?.classList.add('slide-right');
 	setTimeout(() => {
 		calenderContainer.value?.classList.remove('slide-right');
-
 		calenderDate.value.setMonth(calenderDate.value.getMonth() - 1);
-		emit('viewingDate', calenderDate.value);
 		calenderData.value = [
-			getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth() - 1, calenderTaskDataRef.value),
+			getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth()-1, calenderTaskDataRef.value),
 			calenderData.value[0],
 			calenderData.value[1],
 		];
@@ -215,16 +220,22 @@ function calenderPrevMonth(): void {
 }
 
 function calenderNextMonth(): void {
-	resetRowDisplayOnFold(0);
+	rowSelected.value = 0;
+	if(calenderExpand.value && ! displayWeekly.value){
+		updateSelectedDate(new Date(calenderDate.value.getFullYear(), calenderDate.value.getMonth()+1, 1));
+	}
+	else {
+		updateSelectedDate(calenderData.value[2].calender[0][colSelected.value].date);
+	};
+	
 	calenderContainer.value?.classList.add('slide-left');
 	setTimeout(() => {
 		calenderContainer.value?.classList.remove('slide-left');
-
 		calenderDate.value.setMonth(calenderDate.value.getMonth() + 1);
 		calenderData.value = [
 			calenderData.value[1],
 			calenderData.value[2],
-			getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth() + 1, calenderTaskDataRef.value)
+			getMonthlyCalendar(calenderDate.value.getFullYear(), calenderDate.value.getMonth()+1, calenderTaskDataRef.value)
 		];
 	}, 200);
 }
@@ -237,31 +248,36 @@ watch([isSwiping, direction], ([isSwiping, direction]) => {
 		else if (direction === 'up') {
 			calenderExpand.value = false
 		}
-		else if (!calenderExpand.value || displayWeekly.value) {
-			if (direction === 'left') {
-				if(rowDisplayOnFold.value === 4){
-					calenderNextMonth();
-				}
-				else{
-					rowDisplayOnFold.value += 1;
-				};
+		else if (calenderExpand.value && !displayWeekly.value) {
+			console.log('B');
 
-			}
-			else if (direction === 'right') {
-				if(rowDisplayOnFold.value === 0){
-					calenderPrevMonth();
-				}
-				else{
-					rowDisplayOnFold.value -= 1;
-				};
-			};
-		}
-		else if (calenderExpand.value) {
 			if (direction === 'left') {
 				calenderNextMonth();
 			}
 			else if (calenderExpand.value && direction === 'right') {
 				calenderPrevMonth();
+			};
+		}
+		else if (!calenderExpand.value || displayWeekly.value) {
+			console.log('A');
+			if (direction === 'left') {
+				if(rowSelected.value >= rowthreshold.value){
+					calenderNextMonth();
+				}
+				else{
+					updateSelectedDate(new Date(selectedDate.value.getFullYear(), selectedDate.value.getMonth(), selectedDate.value.getDate() +7));
+					rowSelected.value += 1;
+				};
+
+			}
+			else if (direction === 'right') {
+				if(rowSelected.value <= 0){
+					calenderPrevMonth();
+				}
+				else{
+					updateSelectedDate(new Date(selectedDate.value.getFullYear(), selectedDate.value.getMonth(), selectedDate.value.getDate() -7));
+					rowSelected.value -= 1;
+				};
 			};
 		}
 	}
@@ -270,8 +286,5 @@ watch([isSwiping, direction], ([isSwiping, direction]) => {
 
 
 
-// mounted
-onMounted(() => {
-	useSelectedRow();
-});
+
 </script>

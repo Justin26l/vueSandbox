@@ -24,7 +24,6 @@
                 isFuture? 'background:green;': '' "
         >{{ isToday ? (taskDone +'/'+ taskTotal) : taskPending }}</p>
 
-        {{ swipeCount }}
     </div>
 </template>
 
@@ -33,7 +32,6 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { defineProps } from 'vue';
 import type { Task, TaskByDate } from '@/types/calenderType';
 
-const swipeCount = ref<number>(0);
 
 const props = defineProps<{
     selectedDate: Date,
@@ -74,7 +72,6 @@ const isSelected = computed<boolean>(()=>isSameDay(refSelected.value, refCalende
 
 // draw task
 function drawTaskItemTimeout(delay:number){
-    swipeCount.value +=1
     setTimeout(()=>{
         drawTaskItem();
     }, delay);

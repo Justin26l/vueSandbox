@@ -164,6 +164,7 @@
 
 
 .cal .date-col{
+	position: relative;
 	display: flex;
 	flex-direction: column;
     flex: 1;
@@ -218,9 +219,11 @@
 }
 .cal .date-col.weekly-view .task-item{
 	position: absolute;
-	opacity: 1;
 	display:block;
+	opacity: .7;
+	width: 2rem;
+	border-radius: .5rem;
+	left : 50%;
+	transform: translateX(-50%);
 	transition: all .1s ease-in-out;
-	width: 1rem;
-	border-radius: 1rem;
 }

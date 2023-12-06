@@ -41,6 +41,9 @@
       :timeFrom="8"
       :timeTo="20"
     ></calender>
+    {{ 
+    selectedDate
+     }}
 
     <!-- <pre>calender emit "selected-date" : <br>{{selectedDate}}</pre>
     <pre>calender emit "viewing-date" : <br>{{viewingDate}}</pre> -->
@@ -133,7 +136,7 @@ const calenderTaskData = ref<calenderType.CalenderDataItem[]>([
           },
         ]
       },
-      { total: 3, done: 1, task: [
+      { total: 8, done: 1, task: [
           {
             active: true,
             activityColor: 'red',
